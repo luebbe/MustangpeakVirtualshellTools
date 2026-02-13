@@ -2926,6 +2926,7 @@ implementation
 
 uses
   TypInfo,
+  VirtualTrees.BaseTree,
   VirtualTrees.DragnDrop,
   {$IFDEF SpTBX}
   ColumnFormSpTBX,
