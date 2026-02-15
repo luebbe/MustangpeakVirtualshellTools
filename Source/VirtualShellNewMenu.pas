@@ -45,15 +45,14 @@ interface
 {$include ..\Include\AddIns.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Menus, Registry, ShlObj, ShellAPI, ImgList, VirtualResources,
-  MPShellUtilities, MPCommonObjects,
-  MPCommonUtilities,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes,
+  System.Generics.Collections, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Menus,
+  System.Win.Registry, Winapi.ShlObj, Winapi.ShellAPI, Vcl.ImgList,
+  VirtualResources, MPShellUtilities, MPCommonObjects, MPCommonUtilities,
   {$IFDEF USE_TOOLBAR_TB2K}
   TB2Item,
   {$ENDIF}
-  Contnrs,
-  CommCtrl;
+  Winapi.CommCtrl;
 
 { Type defines how the ShellNew item is to create a new file.                   }
 { Null =        A 0 Byte length file, easy.                                     }
@@ -124,15 +123,11 @@ type
 
 { TList that knows how to handle TVirtualShellNewItems }
 
-  TVirtualShellNewItemList = class(TObjectList)
-  private
-    function GetItems(Index: NativeInt): TVirtualShellNewItem;
-    procedure PutItems(Index: NativeInt; const Value: TVirtualShellNewItem);
+  TVirtualShellNewItemList = class(TObjectList<TVirtualShellNewItem>)
   public
     procedure BuildList;
-    function IsDuplicate(TestItem: TVirtualShellNewItem): Boolean;
+    function IsDuplicate(ATestItem: TVirtualShellNewItem): Boolean;
     procedure StripDuplicates;
-    property Items[Index: NativeInt]: TVirtualShellNewItem read GetItems write PutItems; default;
   end;
 
   TOnAddMenuItem = procedure(Sender: TPopupMenu; const NewMenuItem: TVirtualShellNewItem; var Allow: Boolean) of object;
@@ -434,7 +429,7 @@ const
 
 var
   lAddedTxt: Boolean;
-  lCount: Integer;
+  lCount: NativeInt;
   lData: Pointer;
   lDataSize: Integer;
   lDefaultKey: string;
@@ -608,17 +603,6 @@ begin
   end;
 end;
 
-function TVirtualShellNewItemList.GetItems(Index: NativeInt): TVirtualShellNewItem;
-begin
-  Result := TVirtualShellNewItem(inherited Items[Index]);
-end;
-
-procedure TVirtualShellNewItemList.PutItems(Index: NativeInt;
-  const Value: TVirtualShellNewItem);
-begin
-  inherited Items[Index] := Value
-end;
-
 procedure TVirtualShellNewItemList.StripDuplicates;
 var
   i, j: integer;
@@ -640,16 +624,16 @@ begin
   end;
 end;
 
-function TVirtualShellNewItemList.IsDuplicate(TestItem: TVirtualShellNewItem): Boolean;
+function TVirtualShellNewItemList.IsDuplicate(ATestItem: TVirtualShellNewItem): Boolean;
 var
-  i: integer;
+  lCount: NativeInt;
 begin
   Result := False;
-  for i := 0 to Count - 1 do
+  for lCount := 0 to Count - 1 do
   begin
-    if TestItem <> Items[i] then
+    if ATestItem <> Items[lCount] then
     begin
-      Result := AnsiCompareStr(Items[i].FileType, TestItem.FileType) = 0;
+      Result := AnsiCompareStr(Items[lCount].FileType, ATestItem.FileType) = 0;
       if Result then
         Break
     end
