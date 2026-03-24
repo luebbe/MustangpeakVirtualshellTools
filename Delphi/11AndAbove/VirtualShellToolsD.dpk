@@ -25,10 +25,10 @@ package VirtualShellToolsD;
 {$IMAGEBASE $400000}
 {$DEFINE RELEASE}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'VirtualShellTools Delphi Runtime Package'}
+{$DESCRIPTION 'MustangPeak VirtualShellTools Delphi Runtime Package'}
 {$LIBSUFFIX AUTO}
 {$RUNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
   rtl,
@@ -36,7 +36,7 @@ requires
   vclimg,
   EasyListviewD,
   MPCommonLibD,
-  VirtualTreesDR;
+  VirtualTreesR;
 
 contains
   AppletsAndWizards in '..\..\Source\AppletsAndWizards.pas',
